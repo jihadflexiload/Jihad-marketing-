@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard</title>
+</head>
+
+<body>
+
+<h2>User Dashboard</h2>
+
+<h3>Balance: <span id="balance">0</span></h3>
+
+<input type="text" id="number" placeholder="Mobile Number"><br><br>
+<input type="number" id="amount" placeholder="Amount"><br><br>
+
+<button onclick="recharge()">Recharge</button>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+
+var firebaseConfig = {
+apiKey: "AIzaSyBn8oFQWrE2c4OBqzP3tJKF3kVrNnC9EhY",
+authDomain: "bhaibonflexiload.firebaseapp.com",
+databaseURL: "https://bhaibonflexiload-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "bhaibonflexiload",
+};
+
+firebase.initializeApp(firebaseConfig);
+
+firebase.auth().onAuthStateChanged(function(user){
+
+var uid=user.uid;
+
+firebase.database().ref("users/"+uid+"/balance")
+.on("value",function(snapshot){
+
+document.getElementById("balance").innerHTML=snapshot.val();
+
+});
+
+});
+
+function recharge(){
+
+var number=document.getElementById("number").value;
+var amount=document.getElementById("amount").value;
+
+var uid=firebase.auth().currentUser.uid;
+
+firebase.database().ref("recharge").push({
+uid:uid,
+number:number,
+amount:amount,
+status:"pending"
+});
+
+alert("Recharge Request Sent");
+
+}
+
+</script>
+
+</body>
+</html>
